@@ -3,176 +3,301 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Worldwide Radio Scanner – stream live radio from any country, genre, or search term using the Radio Browser public API." />
-  <title>Worldwide Radio Scanner</title>
+  <meta name="description" content="Worldwide Radio Scanner – stream live radio from any country, genre, or search term. Powered by Radio Browser API, Infinity Graphics &amp; Flux Capacitor." />
+  <title>Worldwide Radio Scanner · ∞ www-infinity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <div class="app-wrapper">
 
-    <!-- ── Header ───────────────────────────────────────────── -->
-    <header>
-      <span class="logo" aria-hidden="true">📡</span>
-      <div class="header-text">
-        <h1>Worldwide Radio Scanner</h1>
-        <p>40,000+ stations · police · AM/FM · talk · news · music</p>
+  <!-- ════════════════════════════════════════════════════════
+       ANIMATED CANVAS HERO (Flux Capacitor energy rings)
+  ═══════════════════════════════════════════════════════════ -->
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+
+  <!-- ════════════════════════════════════════════════════════
+       NAV BAR — hamburger + all www-infinity repo links
+  ═══════════════════════════════════════════════════════════ -->
+  <nav class="site-nav" role="navigation" aria-label="Site navigation">
+    <div class="nav-inner">
+
+      <!-- Logo / home link -->
+      <a class="nav-brand" href="https://github.com/www-infinity" aria-label="www-infinity home">
+        <span class="nav-logo" aria-hidden="true">∞</span>
+        <span class="nav-brand-text">www-infinity</span>
+      </a>
+
+      <!-- Hamburger toggle -->
+      <button
+        class="hamburger"
+        id="hamburger"
+        aria-label="Open navigation menu"
+        aria-expanded="false"
+        aria-controls="navMenu"
+      >
+        <span></span><span></span><span></span>
+      </button>
+
+      <!-- Full repo menu -->
+      <ul class="nav-menu" id="navMenu" role="list">
+
+        <li class="nav-group-label">⚡ Signal &amp; Energy</li>
+        <li><a href="https://github.com/www-infinity/Flux-Capacitor"          target="_blank" rel="noopener">Flux Capacitor</a></li>
+        <li><a href="https://github.com/www-infinity/Worldwide-Radio"         target="_blank" rel="noopener" aria-current="page">Worldwide Radio</a></li>
+        <li><a href="https://github.com/www-infinity/Hydrogen-Radio"          target="_blank" rel="noopener">Hydrogen Radio</a></li>
+        <li><a href="https://github.com/www-infinity/Hosting-service"         target="_blank" rel="noopener">Hosting Service</a></li>
+
+        <li class="nav-group-label">🎨 Graphics &amp; Design</li>
+        <li><a href="https://github.com/www-infinity/Infinity-Graphics"       target="_blank" rel="noopener">Infinity Graphics</a></li>
+        <li><a href="https://github.com/www-infinity/3d-world"                target="_blank" rel="noopener">3D World</a></li>
+        <li><a href="https://github.com/www-infinity/Beyond-Tokens"           target="_blank" rel="noopener">Beyond Tokens</a></li>
+
+        <li class="nav-group-label">🎮 Entertainment</li>
+        <li><a href="https://github.com/www-infinity/Theater"                 target="_blank" rel="noopener">Theater</a></li>
+        <li><a href="https://github.com/www-infinity/Bob-Segar-s-Musiverse"   target="_blank" rel="noopener">Bob Seger's Musiverse</a></li>
+        <li><a href="https://github.com/www-infinity/Zelda-NES"               target="_blank" rel="noopener">Zelda NES</a></li>
+        <li><a href="https://github.com/www-infinity/NES-Mario-World-Extravaganza-The-Wizard-Platform" target="_blank" rel="noopener">Mario World</a></li>
+        <li><a href="https://github.com/www-infinity/Wizard-NES-Movie-Website-Cartoon-Movie-Theater"   target="_blank" rel="noopener">Wizard Movie Theater</a></li>
+        <li><a href="https://github.com/www-infinity/Aces"                    target="_blank" rel="noopener">Aces</a></li>
+
+        <li class="nav-group-label">🔬 Science &amp; Tech</li>
+        <li><a href="https://github.com/www-infinity/Ion"                     target="_blank" rel="noopener">Ion</a></li>
+        <li><a href="https://github.com/www-infinity/Time-Machine"            target="_blank" rel="noopener">Time Machine</a></li>
+        <li><a href="https://github.com/www-infinity/Future-Now"              target="_blank" rel="noopener">Future Now</a></li>
+        <li><a href="https://github.com/www-infinity/Hydrogen-Digital-TV"     target="_blank" rel="noopener">Hydrogen Digital TV</a></li>
+        <li><a href="https://github.com/www-infinity/R2D2"                    target="_blank" rel="noopener">R2D2</a></li>
+        <li><a href="https://github.com/www-infinity/Hydrhost"                target="_blank" rel="noopener">HydrHost</a></li>
+
+        <li class="nav-group-label">💰 Finance &amp; Tokens</li>
+        <li><a href="https://github.com/www-infinity/Mint-For-Infinity"       target="_blank" rel="noopener">Mint for Infinity</a></li>
+        <li><a href="https://github.com/www-infinity/Bitcoin-Crusher"         target="_blank" rel="noopener">Bitcoin Crusher</a></li>
+        <li><a href="https://github.com/www-infinity/4-hash-token-system"     target="_blank" rel="noopener">4-Hash Token System</a></li>
+        <li><a href="https://github.com/www-infinity/Open-Flaw"               target="_blank" rel="noopener">Open Flaw</a></li>
+
+        <li class="nav-group-label">🛠 Infrastructure</li>
+        <li><a href="https://github.com/www-infinity/Unifier"                 target="_blank" rel="noopener">Unifier</a></li>
+        <li><a href="https://github.com/www-infinity/Zero-Inertia"            target="_blank" rel="noopener">Zero Inertia</a></li>
+        <li><a href="https://github.com/www-infinity/No-Inertia"              target="_blank" rel="noopener">No Inertia</a></li>
+        <li><a href="https://github.com/www-infinity/Spawn"                   target="_blank" rel="noopener">Spawn</a></li>
+        <li><a href="https://github.com/www-infinity/Npx-Claude-flow-"        target="_blank" rel="noopener">NPX Claude Flow</a></li>
+
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Overlay for closing hamburger menu on outside click -->
+  <div class="nav-overlay" id="navOverlay" aria-hidden="true"></div>
+
+  <!-- ════════════════════════════════════════════════════════
+       PAGE HERO — title + tagline over the canvas
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="hero-section" aria-labelledby="heroTitle">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot" aria-hidden="true"></span>
+        LIVE · 40,000+ STATIONS WORLDWIDE
       </div>
-      <!-- Animated signal-strength bars -->
+      <h1 id="heroTitle" class="hero-title">
+        Worldwide<br />
+        <span class="hero-title-accent">Radio Scanner</span>
+      </h1>
+      <p class="hero-sub">
+        Police · AM · FM · Talk · News · Music · Emergency<br />
+        Search any station on the planet, or scan the dial automatically.
+      </p>
+
+      <!-- Signal strength decoration -->
       <div class="signal-bar" id="signalBar" aria-hidden="true">
         <span></span><span></span><span></span><span></span><span></span>
       </div>
-    </header>
 
-    <main>
+      <!-- Powered-by badges -->
+      <div class="powered-by" aria-label="Powered by">
+        <a href="https://github.com/www-infinity/Flux-Capacitor"    target="_blank" rel="noopener" class="powered-badge flux">
+          ⚡ Flux Capacitor
+        </a>
+        <a href="https://github.com/www-infinity/Infinity-Graphics"  target="_blank" rel="noopener" class="powered-badge graphics">
+          🎨 Infinity Graphics
+        </a>
+        <a href="https://www.radio-browser.info/"                    target="_blank" rel="noopener" class="powered-badge api">
+          📡 Radio Browser API
+        </a>
+      </div>
+    </div>
+  </section>
 
-      <!-- ── Search / Filter controls ─────────────────────────── -->
-      <section class="controls-panel" aria-label="Search and filter">
+  <!-- ════════════════════════════════════════════════════════
+       MAIN APP SHELL
+  ═══════════════════════════════════════════════════════════ -->
+  <div class="app-shell">
 
-        <!-- Free-text search -->
-        <div class="control-group">
-          <label for="searchQuery">Search by name</label>
-          <div class="search-row">
-            <input
-              type="text"
-              id="searchQuery"
-              placeholder="e.g. BBC, WNYC, Police Scanner…"
-              aria-label="Search station by name"
-            />
-            <button class="btn-primary" id="btnSearch" aria-label="Search">Search</button>
-          </div>
-        </div>
+    <!-- ── Search / Filter ──────────────────────────────────── -->
+    <section class="glass-card controls-panel" aria-label="Search and filter">
 
-        <!-- Country filter -->
-        <div class="control-group">
-          <label for="countrySelect">Browse by country</label>
-          <select id="countrySelect" aria-label="Select country">
-            <option value="">— All countries —</option>
-          </select>
-        </div>
-
-        <!-- Genre / tag filter -->
-        <div class="control-group">
-          <label for="tagSelect">Browse by genre / type</label>
-          <select id="tagSelect" aria-label="Select genre or type">
-            <option value="">— All genres —</option>
-            <optgroup label="News &amp; Talk">
-              <option value="news">News</option>
-              <option value="talk">Talk</option>
-              <option value="politics">Politics</option>
-              <option value="police scanner">Police Scanner</option>
-              <option value="emergency">Emergency</option>
-            </optgroup>
-            <optgroup label="Music">
-              <option value="pop">Pop</option>
-              <option value="rock">Rock</option>
-              <option value="jazz">Jazz</option>
-              <option value="classical">Classical</option>
-              <option value="hip-hop">Hip-Hop</option>
-              <option value="country">Country</option>
-              <option value="electronic">Electronic</option>
-              <option value="reggae">Reggae</option>
-              <option value="folk">Folk</option>
-            </optgroup>
-            <optgroup label="Format">
-              <option value="am">AM</option>
-              <option value="fm">FM</option>
-              <option value="public radio">Public Radio</option>
-              <option value="sports">Sports</option>
-              <option value="religious">Religious</option>
-            </optgroup>
-          </select>
-        </div>
-
-        <!-- Volume control -->
-        <div class="control-group">
-          <label for="volume">Volume</label>
-          <div class="volume-group">
-            <span aria-hidden="true">🔈</span>
-            <input
-              type="range"
-              id="volume"
-              min="0"
-              max="100"
-              value="80"
-              aria-label="Volume"
-            />
-            <span aria-hidden="true">🔊</span>
-          </div>
-        </div>
-
-      </section>
-
-      <!-- ── Transport / Scanner controls ─────────────────────── -->
-      <div class="transport" role="toolbar" aria-label="Playback controls">
-        <button class="btn-primary"   id="btnScan" aria-label="Start scanning">⚡ Scan</button>
-        <button class="btn-secondary" id="btnPrev" aria-label="Previous station">⏮ Prev</button>
-        <button class="btn-secondary" id="btnNext" aria-label="Next station">Next ⏭</button>
-        <button class="btn-danger"    id="btnStop" aria-label="Stop playback">⏹ Stop</button>
-
-        <div class="dwell-group">
-          <label for="dwellTime">Dwell:</label>
+      <div class="control-group">
+        <label for="searchQuery">Search by name</label>
+        <div class="search-row">
           <input
-            type="range"
-            id="dwellTime"
-            min="3"
-            max="30"
-            value="6"
-            aria-label="Seconds per station while scanning"
+            type="text"
+            id="searchQuery"
+            placeholder="BBC, WNYC, Police Scanner, Jazz FM…"
+            aria-label="Search station by name"
           />
-          <span id="dwellLabel" aria-live="polite">6s</span>
+          <button class="btn-primary" id="btnSearch">Search</button>
         </div>
       </div>
 
-      <!-- ── Error message ──────────────────────────────────────── -->
-      <div
-        class="error-msg"
-        id="errorMsg"
-        role="alert"
-        aria-live="assertive"
-        hidden
-      ></div>
+      <div class="control-group">
+        <label for="countrySelect">Country</label>
+        <select id="countrySelect" aria-label="Browse by country">
+          <option value="">— All countries —</option>
+        </select>
+      </div>
 
-      <!-- ── Now Playing card ───────────────────────────────────── -->
-      <section class="now-playing" id="nowPlaying" aria-label="Now playing" hidden>
-        <h2 id="stationName"></h2>
-        <div class="now-playing-meta">
-          <span id="stationTags" aria-label="Tags"></span>
-          <span id="stationCountry" aria-label="Location"></span>
-          <span id="stationBitrate" aria-label="Bitrate"></span>
+      <div class="control-group">
+        <label for="tagSelect">Genre / Type</label>
+        <select id="tagSelect" aria-label="Browse by genre or type">
+          <option value="">— All genres —</option>
+          <optgroup label="News &amp; Talk">
+            <option value="news">News</option>
+            <option value="talk">Talk</option>
+            <option value="politics">Politics</option>
+            <option value="police scanner">Police Scanner</option>
+            <option value="emergency">Emergency</option>
+          </optgroup>
+          <optgroup label="Music">
+            <option value="pop">Pop</option>
+            <option value="rock">Rock</option>
+            <option value="jazz">Jazz</option>
+            <option value="classical">Classical</option>
+            <option value="hip-hop">Hip-Hop</option>
+            <option value="country">Country</option>
+            <option value="electronic">Electronic</option>
+            <option value="reggae">Reggae</option>
+            <option value="folk">Folk</option>
+          </optgroup>
+          <optgroup label="Format">
+            <option value="am">AM</option>
+            <option value="fm">FM</option>
+            <option value="public radio">Public Radio</option>
+            <option value="sports">Sports</option>
+            <option value="religious">Religious</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="volume">Volume</label>
+        <div class="volume-group">
+          <span aria-hidden="true">🔈</span>
+          <input type="range" id="volume" min="0" max="100" value="80" aria-label="Volume" />
+          <span aria-hidden="true">🔊</span>
         </div>
-      </section>
-
-      <!-- Hidden audio element -->
-      <audio id="audioPlayer" preload="none" aria-hidden="true"></audio>
-
-      <!-- ── Station list ────────────────────────────────────────── -->
-      <div class="list-header">
-        <h3>Stations</h3>
-        <span class="result-count" id="resultCount" aria-live="polite"></span>
       </div>
 
-      <div class="loading" id="loading" aria-label="Loading stations">
-        <div class="spinner" aria-hidden="true"></div>
-        Loading stations…
+    </section>
+
+    <!-- ── Transport controls ────────────────────────────────── -->
+    <div class="transport glass-card" role="toolbar" aria-label="Playback controls">
+      <button class="btn-primary"   id="btnScan">⚡ Scan</button>
+      <button class="btn-secondary" id="btnPrev">⏮ Prev</button>
+      <button class="btn-secondary" id="btnNext">Next ⏭</button>
+      <button class="btn-danger"    id="btnStop">⏹ Stop</button>
+      <div class="dwell-group">
+        <label for="dwellTime">Dwell</label>
+        <input type="range" id="dwellTime" min="3" max="30" value="6" aria-label="Seconds per station" />
+        <span id="dwellLabel" aria-live="polite">6s</span>
       </div>
+    </div>
 
-      <div class="station-list-wrap">
-        <ul class="station-list" id="stationList" aria-label="Station list"></ul>
+    <!-- ── Error banner ──────────────────────────────────────── -->
+    <div class="error-msg" id="errorMsg" role="alert" aria-live="assertive" hidden></div>
+
+    <!-- ── Now Playing card ─────────────────────────────────── -->
+    <section class="now-playing glass-card" id="nowPlaying" aria-label="Now playing" hidden>
+      <h2 id="stationName"></h2>
+      <div class="now-playing-meta">
+        <span id="stationTags"></span>
+        <span id="stationCountry"></span>
+        <span id="stationBitrate"></span>
       </div>
+    </section>
 
-    </main>
+    <!-- Hidden audio -->
+    <audio id="audioPlayer" preload="none" aria-hidden="true"></audio>
 
-    <!-- ── Footer ────────────────────────────────────────────── -->
-    <footer>
-      Station data provided by the
-      <a href="https://www.radio-browser.info/" target="_blank" rel="noopener noreferrer">Radio Browser</a>
-      community (CC0). No API key required.
-    </footer>
+    <!-- ── Station list ─────────────────────────────────────── -->
+    <div class="list-header">
+      <h3>Stations</h3>
+      <span class="result-count" id="resultCount" aria-live="polite"></span>
+    </div>
 
-  </div>
+    <div class="loading" id="loading" aria-label="Loading stations">
+      <div class="spinner" aria-hidden="true"></div>
+      Loading stations…
+    </div>
 
-  <!-- Scripts -->
+    <div class="station-list-wrap glass-card">
+      <ul class="station-list" id="stationList" aria-label="Station list"></ul>
+    </div>
+
+  </div><!-- /.app-shell -->
+
+  <!-- ════════════════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="footer-logo" aria-hidden="true">∞</span>
+        <span>www-infinity</span>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/www-infinity/Flux-Capacitor"   target="_blank" rel="noopener">Flux Capacitor</a>
+        <a href="https://github.com/www-infinity/Infinity-Graphics" target="_blank" rel="noopener">Infinity Graphics</a>
+        <a href="https://www.radio-browser.info/"                   target="_blank" rel="noopener">Radio Browser</a>
+        <a href="https://github.com/www-infinity"                   target="_blank" rel="noopener">All Repos</a>
+      </div>
+      <p class="footer-copy">
+        Station data: <a href="https://www.radio-browser.info/" target="_blank" rel="noopener">Radio Browser</a> (CC0) · No API key required
+      </p>
+    </div>
+  </footer>
+
+  <!-- Scripts: hero canvas → API client → app logic -->
   <script src="js/radioBrowser.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/hero.js"></script>
+  <script>
+    // Hamburger menu toggle
+    (function () {
+      const btn     = document.getElementById("hamburger");
+      const menu    = document.getElementById("navMenu");
+      const overlay = document.getElementById("navOverlay");
+
+      function open() {
+        menu.classList.add("open");
+        overlay.classList.add("visible");
+        btn.setAttribute("aria-expanded", "true");
+        btn.classList.add("open");
+      }
+      function close() {
+        menu.classList.remove("open");
+        overlay.classList.remove("visible");
+        btn.setAttribute("aria-expanded", "false");
+        btn.classList.remove("open");
+      }
+
+      btn.addEventListener("click", () =>
+        menu.classList.contains("open") ? close() : open()
+      );
+      overlay.addEventListener("click", close);
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") close();
+      });
+    })();
+  </script>
 </body>
 </html>
