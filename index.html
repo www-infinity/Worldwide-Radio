@@ -129,6 +129,74 @@
   </section>
 
   <!-- ════════════════════════════════════════════════════════
+       BITCOIN CRUSHER — Entropy-driven channel selector
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="app-shell" style="padding-bottom:0">
+    <div class="crusher-card glass-card" id="crusherCard" aria-labelledby="crusherTitle">
+
+      <div class="crusher-header">
+        <div>
+          <h2 class="crusher-title" id="crusherTitle">
+            <span class="crusher-icon" aria-hidden="true">₿</span>
+            Bitcoin Crusher
+          </h2>
+          <p class="crusher-sub">
+            Latest block hash → entropy engine → radio channel
+          </p>
+        </div>
+        <a
+          href="https://github.com/www-infinity/Bitcoin-Crusher"
+          target="_blank"
+          rel="noopener"
+          class="powered-badge flux"
+          aria-label="Bitcoin-Crusher repo"
+        >
+          ⛓ Repo
+        </a>
+      </div>
+
+      <!-- Slot-machine result display -->
+      <div class="crusher-slot" id="crusherSlot" aria-live="polite" aria-atomic="true">
+        <div class="slot-channel" id="slotChannel">
+          <span class="slot-emoji" id="slotEmoji">🎰</span>
+          <span class="slot-label" id="slotLabel">Spin to select a channel</span>
+        </div>
+      </div>
+
+      <!-- Block metadata row -->
+      <div class="crusher-meta" id="crusherMeta" hidden>
+        <div class="crusher-meta-item">
+          <span class="crusher-meta-label">Block</span>
+          <span class="crusher-meta-value" id="crusherHeight">—</span>
+        </div>
+        <div class="crusher-meta-item crusher-hash-wrap">
+          <span class="crusher-meta-label">Hash</span>
+          <code class="crusher-hash" id="crusherHash" title="">—</code>
+        </div>
+        <div class="crusher-meta-item">
+          <span class="crusher-meta-label">Index</span>
+          <span class="crusher-meta-value" id="crusherIndex">—</span>
+        </div>
+      </div>
+
+      <!-- Action row -->
+      <div class="crusher-actions">
+        <button class="btn-primary crusher-spin-btn" id="btnCrush" aria-label="Spin Bitcoin Crusher">
+          <span class="crush-btn-icon" aria-hidden="true">🎰</span>
+          Spin the Dial
+        </button>
+        <span class="crusher-hint" id="crusherHint">
+          Fetches the live Bitcoin block hash and uses it as entropy to pick your station genre.
+        </span>
+      </div>
+
+      <!-- Inline error for crusher only -->
+      <div class="error-msg" id="crusherError" role="alert" hidden></div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════
        MAIN APP SHELL
   ═══════════════════════════════════════════════════════════ -->
   <div class="app-shell">
@@ -266,7 +334,8 @@
     </div>
   </footer>
 
-  <!-- Scripts: hero canvas → API client → app logic -->
+  <!-- Scripts: hero canvas → Bitcoin Crusher → API client → app logic -->
+  <script src="js/bitcoinCrusher.js"></script>
   <script src="js/radioBrowser.js"></script>
   <script src="js/app.js"></script>
   <script src="js/hero.js"></script>

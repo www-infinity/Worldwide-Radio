@@ -38,6 +38,17 @@
   const resultCount    = document.getElementById("resultCount");
   const signalBar      = document.getElementById("signalBar");
 
+  // Bitcoin Crusher DOM refs
+  const crushBtn       = document.getElementById("btnCrush");
+  const slotEmoji      = document.getElementById("slotEmoji");
+  const slotLabel      = document.getElementById("slotLabel");
+  const crusherMeta    = document.getElementById("crusherMeta");
+  const crusherHeight  = document.getElementById("crusherHeight");
+  const crusherHash    = document.getElementById("crusherHash");
+  const crusherIndex   = document.getElementById("crusherIndex");
+  const crusherHint    = document.getElementById("crusherHint");
+  const crusherError   = document.getElementById("crusherError");
+
   // ── Init ──────────────────────────────────────────────────────────────────
   async function init() {
     dwellRange.value = scanDwell;
@@ -90,6 +101,7 @@
     prevBtn.addEventListener("click", playPrev);
     nextBtn.addEventListener("click", playNext);
     stopBtn.addEventListener("click", stopAll);
+    crushBtn.addEventListener("click", handleCrush);
 
     dwellRange.addEventListener("input", () => {
       scanDwell = parseInt(dwellRange.value, 10);
