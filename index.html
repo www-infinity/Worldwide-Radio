@@ -29,6 +29,15 @@
         <span class="nav-brand-text">www-infinity</span>
       </a>
 
+      <!-- Profile avatar button -->
+      <button
+        class="profile-btn"
+        id="profileBtn"
+        aria-label="Open user profile"
+        aria-haspopup="dialog"
+        title="Set your profile"
+      >∞</button>
+
       <!-- Hamburger toggle -->
       <button
         class="hamburger"
@@ -40,7 +49,7 @@
         <span></span><span></span><span></span>
       </button>
 
-      <!-- Full repo menu -->
+      <!-- Full repo menu (static fallback; replaced dynamically by DynamicNav) -->
       <ul class="nav-menu" id="navMenu" role="list">
 
         <li class="nav-group-label">⚡ Signal &amp; Energy</li>
@@ -334,25 +343,129 @@
     </div>
   </footer>
 
-  <!-- Scripts: hero canvas → Bitcoin Crusher → API client → app logic -->
+  <!-- ════════════════════════════════════════════════════════
+       PROFILE MODAL
+  ═══════════════════════════════════════════════════════════ -->
+  <div class="modal-backdrop" id="profileModalBackdrop" hidden aria-hidden="true"></div>
+  <dialog class="profile-modal glass-card" id="profileModal" aria-label="User profile" aria-modal="true">
+    <div class="modal-header">
+      <h2>Your Profile</h2>
+      <button class="modal-close" id="profileModalClose" aria-label="Close profile">✕</button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="modal-tabs" role="tablist">
+      <button class="modal-tab active" role="tab" data-tab="profile" aria-selected="true">Profile</button>
+      <button class="modal-tab" role="tab" data-tab="history" aria-selected="false">History</button>
+      <button class="modal-tab" role="tab" data-tab="settings" aria-selected="false">Settings ⚙</button>
+    </div>
+
+    <!-- Tab: Profile -->
+    <div class="modal-panel" id="tabProfile">
+      <div class="profile-avatar-row">
+        <div class="profile-avatar-large" id="profileAvatarPreview">∞</div>
+        <div class="profile-colour-section">
+          <label class="profile-label">Avatar colour</label>
+          <div class="colour-swatch-wrap" id="profileColourSwatches"></div>
+        </div>
+      </div>
+      <label class="profile-label" for="profileNameInput">Display name</label>
+      <div class="search-row" style="margin-top:0.3rem">
+        <input type="text" id="profileNameInput" placeholder="Enter your name…" maxlength="32" />
+        <button class="btn-primary" id="profileSaveName">Save</button>
+      </div>
+    </div>
+
+    <!-- Tab: History -->
+    <div class="modal-panel" id="tabHistory" hidden>
+      <div class="history-section">
+        <h3 class="history-title">📻 Recent Stations <span class="hist-count" id="histStationCount"></span></h3>
+        <ul class="history-list" id="profileScanHistory"></ul>
+      </div>
+      <div class="history-section">
+        <h3 class="history-title">₿ Crusher Spins <span class="hist-count" id="histCrushCount"></span></h3>
+        <ul class="history-list" id="profileCrushHistory"></ul>
+      </div>
+      <button class="btn-secondary" id="profileClearHistory" style="margin-top:1rem;width:100%">
+        🗑 Clear all history
+      </button>
+    </div>
+
+    <!-- Tab: Settings -->
+    <div class="modal-panel" id="tabSettings" hidden>
+      <label class="profile-label">AI API Key <span class="settings-hint">(optional — stored in your browser only)</span></label>
+      <input
+        type="password"
+        id="aiApiKeyInput"
+        placeholder="sk-… or any OpenAI-compatible key"
+        autocomplete="off"
+        style="width:100%;margin-bottom:0.5rem"
+      />
+      <label class="profile-label">AI Endpoint URL</label>
+      <input
+        type="url"
+        id="aiApiUrlInput"
+        placeholder="https://api.openai.com/v1/chat/completions"
+        style="width:100%;margin-bottom:0.75rem"
+      />
+      <button class="btn-primary" id="saveAiSettings" style="width:100%">Save AI Settings</button>
+      <p class="settings-hint" style="margin-top:0.75rem">
+        Your key is stored only in <code>localStorage</code> and never sent to any server other than your chosen AI endpoint.
+        Works with OpenAI, OpenRouter, Groq, or any OpenAI-compatible API.
+      </p>
+    </div>
+  </dialog>
+
+  <!-- ════════════════════════════════════════════════════════
+       AI CHAT PANEL (floating)
+  ═══════════════════════════════════════════════════════════ -->
+  <button class="ai-chat-toggle" id="aiChatToggle" aria-label="Open AI assistant" title="AI Radio Assistant">
+    💬
+  </button>
+
+  <div class="ai-chat-panel glass-card" id="aiChatPanel" hidden role="dialog" aria-label="AI assistant">
+    <div class="ai-chat-header">
+      <span>∞ AI Radio Assistant</span>
+      <button class="modal-close" id="aiChatClose" aria-label="Close AI chat">✕</button>
+    </div>
+    <div class="ai-chat-messages" id="aiChatMessages" aria-live="polite" aria-relevant="additions"></div>
+    <div class="ai-chat-input-row">
+      <input
+        type="text"
+        id="aiChatInput"
+        placeholder="Ask anything about the scanner…"
+        aria-label="Chat message"
+        autocomplete="off"
+      />
+      <button class="btn-primary" id="aiChatSend" aria-label="Send message">➤</button>
+    </div>
+  </div>
+
+  <!-- Toast notification container -->
+  <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="false"></div>
+
+  <!-- Scripts: profile → AI → dynamic nav → Bitcoin Crusher → radio browser → app → hero -->
+  <script src="js/userProfile.js"></script>
+  <script src="js/aiAssistant.js"></script>
+  <script src="js/dynamicNav.js"></script>
   <script src="js/bitcoinCrusher.js"></script>
   <script src="js/radioBrowser.js"></script>
   <script src="js/app.js"></script>
   <script src="js/hero.js"></script>
   <script>
-    // Hamburger menu toggle
+    // ── Hamburger menu ──────────────────────────────────────────────────────
     (function () {
       const btn     = document.getElementById("hamburger");
       const menu    = document.getElementById("navMenu");
       const overlay = document.getElementById("navOverlay");
 
-      function open() {
+      function openMenu() {
         menu.classList.add("open");
         overlay.classList.add("visible");
         btn.setAttribute("aria-expanded", "true");
         btn.classList.add("open");
       }
-      function close() {
+      function closeMenu() {
         menu.classList.remove("open");
         overlay.classList.remove("visible");
         btn.setAttribute("aria-expanded", "false");
@@ -360,13 +473,122 @@
       }
 
       btn.addEventListener("click", () =>
-        menu.classList.contains("open") ? close() : open()
+        menu.classList.contains("open") ? closeMenu() : openMenu()
       );
-      overlay.addEventListener("click", close);
+      overlay.addEventListener("click", closeMenu);
       document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") close();
+        if (e.key === "Escape") { closeMenu(); closeProfile(); }
       });
     })();
+
+    // ── Profile modal ───────────────────────────────────────────────────────
+    (function () {
+      const profileBtn     = document.getElementById("profileBtn");
+      const modal          = document.getElementById("profileModal");
+      const backdrop       = document.getElementById("profileModalBackdrop");
+      const closeBtn       = document.getElementById("profileModalClose");
+      const saveNameBtn    = document.getElementById("profileSaveName");
+      const clearHistBtn   = document.getElementById("profileClearHistory");
+      const saveAiBtn      = document.getElementById("saveAiSettings");
+      const tabs           = document.querySelectorAll(".modal-tab");
+      const panels         = document.querySelectorAll(".modal-panel");
+
+      function openProfile() {
+        UserProfile.renderModal();
+
+        // Pre-fill AI settings — leave key input blank if set (type=password hides it anyway)
+        document.getElementById("aiApiKeyInput").value = "";
+        document.getElementById("aiApiKeyInput").placeholder = AIAssistant.getApiKey()
+          ? "Key saved — paste a new one to update"
+          : "sk-… or any OpenAI-compatible key";
+        document.getElementById("aiApiUrlInput").value = AIAssistant.getApiUrl();
+
+        // Show history counts
+        const p = UserProfile.get();
+        const sc = document.getElementById("histStationCount");
+        const cc = document.getElementById("histCrushCount");
+        if (sc) sc.textContent = `(${p.scanHistory.length})`;
+        if (cc) cc.textContent = `(${p.crushHistory.length})`;
+
+        // Update large avatar preview
+        const preview = document.getElementById("profileAvatarPreview");
+        if (preview) {
+          preview.textContent   = p.name ? p.name[0].toUpperCase() : "∞";
+          preview.style.background = p.avatarColour;
+        }
+
+        backdrop.hidden = false;
+        backdrop.removeAttribute("aria-hidden");
+        modal.showModal ? modal.showModal() : (modal.hidden = false);
+        document.getElementById("profileNameInput").focus();
+      }
+
+      window.closeProfile = function () {
+        backdrop.hidden = true;
+        backdrop.setAttribute("aria-hidden", "true");
+        modal.close ? modal.close() : (modal.hidden = true);
+      };
+
+      profileBtn.addEventListener("click", openProfile);
+      backdrop.addEventListener("click", closeProfile);
+      closeBtn.addEventListener("click", closeProfile);
+
+      // Tab switching
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          tabs.forEach((t) => { t.classList.remove("active"); t.setAttribute("aria-selected", "false"); });
+          panels.forEach((p) => (p.hidden = true));
+          tab.classList.add("active");
+          tab.setAttribute("aria-selected", "true");
+          const target = document.getElementById("tab" + tab.dataset.tab.charAt(0).toUpperCase() + tab.dataset.tab.slice(1));
+          if (target) { target.hidden = false; }
+          // Re-render history panel on switch
+          if (tab.dataset.tab === "history") UserProfile.renderModal();
+        });
+      });
+
+      // Save name
+      saveNameBtn.addEventListener("click", () => {
+        const val = document.getElementById("profileNameInput").value;
+        UserProfile.setName(val);
+        const preview = document.getElementById("profileAvatarPreview");
+        if (preview) {
+          const p = UserProfile.get();
+          preview.textContent = p.name ? p.name[0].toUpperCase() : "∞";
+        }
+      });
+
+      // Clear history
+      clearHistBtn.addEventListener("click", () => {
+        if (confirm("Clear all scan, crusher, and chat history?")) {
+          UserProfile.clearHistory();
+          UserProfile.renderModal();
+        }
+      });
+
+      // Save AI settings
+      saveAiBtn.addEventListener("click", () => {
+        const keyInput = document.getElementById("aiApiKeyInput").value.trim();
+        const urlInput = document.getElementById("aiApiUrlInput").value.trim();
+        // Only overwrite key if the user actually typed a new value
+        if (keyInput) AIAssistant.setApiKey(keyInput);
+        if (urlInput) AIAssistant.setApiUrl(urlInput);
+        const savedMsg = document.createElement("p");
+        savedMsg.textContent = "✓ Saved";
+        savedMsg.style.cssText = "color:var(--accent);font-size:0.85rem;margin-top:0.4rem";
+        saveAiBtn.after(savedMsg);
+        setTimeout(() => savedMsg.remove(), 2000);
+      });
+
+      // Boot: render avatar
+      UserProfile.renderNavAvatar();
+    })();
+
+    // ── AI chat ─────────────────────────────────────────────────────────────
+    AIAssistant.initUI();
+
+    // ── Dynamic nav ──────────────────────────────────────────────────────────
+    DynamicNav.init();
   </script>
 </body>
 </html>

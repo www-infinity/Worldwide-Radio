@@ -58,6 +58,7 @@
     await loadCountries();
     await loadTopStations();
     setupEventListeners();
+    startBlockPoller();
   }
 
   async function loadCountries() {
@@ -228,6 +229,7 @@
     });
 
     RadioBrowser.registerClick(station.stationuuid);
+    UserProfile.logStation(station);
     updateNowPlaying(station);
     highlightListItem(currentIndex);
   }
@@ -352,6 +354,122 @@
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#039;");
+  }
+
+  // ── Bitcoin Crusher ───────────────────────────────────────────────────────
+
+  /**
+   * Handle the "Spin the Dial" button click.
+   * Fetches the latest BTC block hash, crushes it to a channel index,
+   * loads matching stations, and logs the result to the user profile.
+   */
+  async function handleCrush() {
+    crushBtn.disabled = true;
+    crushBtn.textContent = "⚡ Fetching block…";
+    crusherError.hidden = true;
+
+    // Animate the slot
+    slotEmoji.classList.add("spinning");
+    slotLabel.textContent = "Crushing hash…";
+
+    try {
+      const result = await BitcoinCrusher.spin();
+      const { hash, height, index, channel } = result;
+
+      // Update slot display
+      slotEmoji.classList.remove("spinning");
+      slotEmoji.textContent = channel.emoji;
+      slotLabel.textContent = channel.label;
+
+      // Update metadata row
+      crusherMeta.hidden   = false;
+      crusherHeight.textContent = `#${height.toLocaleString()}`;
+      crusherHash.textContent   = hash.slice(0, 20) + "…";
+      crusherHash.title         = hash;
+      crusherIndex.textContent  = `${index} / ${BitcoinCrusher.CHANNELS.length - 1}`;
+
+      // Update hint to show the formula
+      crusherHint.textContent =
+        `0x${hash.slice(0, 8)}… mod 16 = ${index} → ${channel.emoji} ${channel.label}`;
+
+      // Update the tag selector to reflect the crushed genre
+      tagSelect.value = channel.tag;
+
+      // Load stations for the selected genre
+      queryInput.value  = "";
+      countrySelect.value = "";
+      showLoading(true);
+      clearError();
+      stopAll();
+
+      try {
+        stations = await RadioBrowser.getStationsByTag(channel.tag, 200);
+        renderStationList();
+        if (stations.length === 0) {
+          showError(`No stations found for "${channel.label}". Try spinning again.`);
+        }
+      } catch (e) {
+        showError("Could not load stations for this channel. Check your connection.");
+      } finally {
+        showLoading(false);
+      }
+
+      // Persist to user profile
+      UserProfile.logCrush(result);
+      showToast(`${channel.emoji} ${channel.label} — Block #${height.toLocaleString()}`);
+
+    } catch (err) {
+      slotEmoji.classList.remove("spinning");
+      slotEmoji.textContent = "⚠️";
+      slotLabel.textContent = "Could not fetch block";
+      crusherError.textContent = err.message;
+      crusherError.hidden = false;
+    } finally {
+      crushBtn.disabled    = false;
+      crushBtn.innerHTML   = '<span class="crush-btn-icon" aria-hidden="true">🎰</span> Spin the Dial';
+    }
+  }
+
+  /**
+   * Auto-poll Bitcoin for new blocks (every 10 minutes).
+   * Only shows a toast when the block height increases; does NOT auto-spin.
+   */
+  let lastKnownBlock = 0;
+
+  const BLOCK_POLL_MS = 10 * 60 * 1000; // 10 minutes — approx. Bitcoin block time
+
+  function startBlockPoller() {
+    async function poll() {
+      try {
+        const result = await BitcoinCrusher.spin();
+        if (lastKnownBlock && result.height > lastKnownBlock) {
+          showToast(`₿ New Bitcoin block #${result.height.toLocaleString()} — spin to refresh your channel!`);
+        }
+        lastKnownBlock = result.height;
+      } catch (_) { /* silently ignore network errors in background poll */ }
+    }
+    // Delay first poll by 30 s so page load finishes first
+    setTimeout(() => { poll(); setInterval(poll, BLOCK_POLL_MS); }, 30_000);
+  }
+
+  // ── Toast notifications ───────────────────────────────────────────────────
+
+  function showToast(msg) {
+    const container = document.getElementById("toastContainer");
+    if (!container) return;
+
+    const toast = document.createElement("div");
+    toast.className   = "toast";
+    toast.textContent = msg;
+    container.appendChild(toast);
+
+    // Trigger enter animation
+    requestAnimationFrame(() => toast.classList.add("toast-show"));
+
+    setTimeout(() => {
+      toast.classList.remove("toast-show");
+      toast.addEventListener("transitionend", () => toast.remove(), { once: true });
+    }, 4000);
   }
 
   // ── Bootstrap ─────────────────────────────────────────────────────────────
