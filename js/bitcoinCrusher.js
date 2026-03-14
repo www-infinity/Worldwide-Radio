@@ -8,6 +8,7 @@
  *
  * CORS-friendly public APIs, no key required.
  *   Primary:  https://blockchain.info/latestblock
+ *   Fallback: https://mempool.space/api/blocks/tip (latest 10 blocks)
  *   Fallback: https://api.blockcypher.com/v1/btc/main
  */
 
@@ -17,33 +18,34 @@ const BitcoinCrusher = (() => {
    * 16 channel categories — each maps to a Radio Browser tag so stations
    * can be fetched immediately after the hash is crushed.
    *
-   * Ordering matches the problem statement categories:
-   *   Jazz/Masterpiece · Police/Military · Cool/Trendy
-   *   Alien · Conversation/Shortwave · Digital Live
-   *   + 10 additional genres for full 16-slot coverage
+   * Emojis match the problem-statement channel layout:
+   *   🎷jazz · 🎨masterpiece · 🍄police scanner · 😎cool
+   *   🛸alien · 👌top notch · ⭐trendy · 💃dance
+   *   ♥️love · 🧱military comms · 🟨news · 🟦conversation ham
+   *   🟥shortwave · 🟪FM · 🟩AM · ⬜digital live
    */
   const CHANNELS = [
     { id: "jazz",       emoji: "🎷", label: "Jazz",               tag: "jazz"           },
     { id: "classical",  emoji: "🎨", label: "Masterpiece",        tag: "classical"      },
-    { id: "police",     emoji: "🚔", label: "Police Scanner",     tag: "police scanner" },
-    { id: "military",   emoji: "🪖", label: "Military",           tag: "military"       },
+    { id: "police",     emoji: "🍄", label: "Police Scanner",     tag: "police scanner" },
     { id: "chill",      emoji: "😎", label: "Cool / Chill",       tag: "chill"          },
-    { id: "pop",        emoji: "⭐", label: "Trendy / Pop",        tag: "pop"            },
     { id: "electronic", emoji: "🛸", label: "Alien / Electronic", tag: "electronic"     },
-    { id: "talk",       emoji: "🟦", label: "Conversation",       tag: "talk"           },
-    { id: "shortwave",  emoji: "📻", label: "Shortwave",          tag: "shortwave"      },
-    { id: "news",       emoji: "⬜", label: "Digital Live",       tag: "news"           },
-    { id: "rock",       emoji: "🎸", label: "Rock",               tag: "rock"           },
-    { id: "hiphop",     emoji: "🎤", label: "Hip-Hop",            tag: "hip-hop"        },
-    { id: "reggae",     emoji: "🌴", label: "Reggae",             tag: "reggae"         },
-    { id: "country",    emoji: "🤠", label: "Country",            tag: "country"        },
-    { id: "folk",       emoji: "🌍", label: "Folk / World",       tag: "folk"           },
-    { id: "ambient",    emoji: "🌌", label: "Ambient / Space",    tag: "ambient"        },
+    { id: "top",        emoji: "👌", label: "Top Notch",          tag: "top 40"         },
+    { id: "pop",        emoji: "⭐", label: "Trendy / Pop",        tag: "pop"            },
+    { id: "dance",      emoji: "💃", label: "Dance",              tag: "dance"          },
+    { id: "love",       emoji: "♥️", label: "Love / Romance",     tag: "love songs"     },
+    { id: "military",   emoji: "🧱", label: "Military Comms",     tag: "military"       },
+    { id: "news",       emoji: "🟨", label: "News",               tag: "news"           },
+    { id: "talk",       emoji: "🟦", label: "Conversation / Ham", tag: "talk"           },
+    { id: "shortwave",  emoji: "🟥", label: "Shortwave",          tag: "shortwave"      },
+    { id: "fm",         emoji: "🟪", label: "FM",                 tag: "fm"             },
+    { id: "am",         emoji: "🟩", label: "AM",                 tag: "am"             },
+    { id: "digital",    emoji: "⬜", label: "Digital Live",       tag: "news"           },
   ];
 
   /**
    * Fetch the latest Bitcoin block hash and height.
-   * Tries blockchain.info first; falls back to BlockCypher.
+   * Tries blockchain.info first; falls back to mempool.space, then BlockCypher.
    *
    * @returns {Promise<{hash: string, height: number}>}
    */
@@ -60,10 +62,27 @@ const BitcoinCrusher = (() => {
         }
       }
     } catch (_) {
-      /* fall through to fallback */
+      /* fall through to next fallback */
     }
 
-    // Fallback: BlockCypher (CORS-open, no key for read-only)
+    // Fallback 1: mempool.space — tip hash + height as separate requests
+    try {
+      const [hashRes, heightRes] = await Promise.all([
+        fetch("https://mempool.space/api/blocks/tip/hash"),
+        fetch("https://mempool.space/api/blocks/tip/height"),
+      ]);
+      if (hashRes.ok && heightRes.ok) {
+        const hash   = (await hashRes.text()).trim();
+        const height = parseInt(await heightRes.text(), 10);
+        if (/^[0-9a-f]{64}$/i.test(hash) && !isNaN(height)) {
+          return { hash, height };
+        }
+      }
+    } catch (_) {
+      /* fall through to final fallback */
+    }
+
+    // Fallback 2: BlockCypher (CORS-open, no key for read-only)
     const res = await fetch("https://api.blockcypher.com/v1/btc/main", {
       headers: { Accept: "application/json" },
     });

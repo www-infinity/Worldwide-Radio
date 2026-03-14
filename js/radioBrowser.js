@@ -3,40 +3,72 @@
  * Uses the public Radio Browser API (https://api.radio-browser.info/)
  * No API key required – free, community-driven, CORS-enabled.
  *
- * To use a different base URL (e.g. a mirror), set
+ * Automatically tries multiple community mirrors if the primary server
+ * is unreachable, so the scanner keeps working when any single node is down.
+ *
+ * To override the mirror list entirely, set
  *   window.RADIO_BROWSER_BASE_URL = "https://nl1.api.radio-browser.info/json"
  * before this script loads.
  */
 
 const RadioBrowser = (() => {
-  // Primary server; falls back to a mirror list at runtime.
-  const DEFAULT_BASE = "https://de1.api.radio-browser.info/json";
+  // Community mirrors in preference order.
+  const MIRRORS = [
+    "https://de1.api.radio-browser.info/json",
+    "https://nl1.api.radio-browser.info/json",
+    "https://at1.api.radio-browser.info/json",
+    "https://fi1.api.radio-browser.info/json",
+  ];
+
+  // Index of the mirror currently in use (advances on failure).
+  let mirrorIdx = 0;
 
   function baseUrl() {
-    return (
-      (typeof window !== "undefined" && window.RADIO_BROWSER_BASE_URL) ||
-      DEFAULT_BASE
-    );
+    if (typeof window !== "undefined" && window.RADIO_BROWSER_BASE_URL) {
+      return window.RADIO_BROWSER_BASE_URL;
+    }
+    return MIRRORS[mirrorIdx % MIRRORS.length];
   }
 
   /**
    * Perform a GET request against the Radio Browser API.
+   * Automatically retries on the next mirror if the current one fails.
    * @param {string} path  – e.g. "/stations/bycountry/United States"
    * @param {Object} params – query-string parameters
    * @returns {Promise<Array>}
    */
   async function get(path, params = {}) {
-    const url = new URL(baseUrl() + path);
-    Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+    const tried = new Set();
+    let lastError;
 
-    const response = await fetch(url.toString(), {
-      headers: { "User-Agent": "WorldwideRadioScanner/1.0" },
-    });
+    for (let attempt = 0; attempt < MIRRORS.length; attempt++) {
+      const base = baseUrl();
+      if (tried.has(base)) { mirrorIdx++; continue; }
+      tried.add(base);
 
-    if (!response.ok) {
-      throw new Error(`Radio Browser API error ${response.status}: ${response.statusText}`);
+      try {
+        const url = new URL(base + path);
+        Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+
+        const response = await fetch(url.toString(), {
+          headers: {
+            "User-Agent": "WorldwideRadioScanner/1.0",
+            "Accept": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Radio Browser API error ${response.status}: ${response.statusText}`);
+        }
+        return await response.json();
+      } catch (err) {
+        lastError = err;
+        // Advance to next mirror and retry
+        mirrorIdx++;
+      }
     }
-    return response.json();
+
+    throw lastError || new Error("All Radio Browser mirrors unavailable. Check your connection.");
   }
 
   /**
@@ -115,7 +147,10 @@ const RadioBrowser = (() => {
     // Fire-and-forget; ignore errors silently.
     fetch(`${baseUrl()}/url/${stationuuid}`, {
       method: "GET",
-      headers: { "User-Agent": "WorldwideRadioScanner/1.0" },
+      headers: {
+        "User-Agent": "WorldwideRadioScanner/1.0",
+        "Accept": "application/json",
+      },
     }).catch(() => {});
   }
 

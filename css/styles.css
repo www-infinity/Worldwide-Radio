@@ -1332,3 +1332,17 @@ button.active {
   transform: translateY(0);
 }
 
+
+/* ══════════════════════════════════════════════════════════
+   AUDIO VISUALISER
+══════════════════════════════════════════════════════════ */
+.visualiser-canvas {
+  display: block;
+  width: 100%;
+  height: 64px;
+  margin-top: 0.85rem;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.3);
+  /* Subtle inset glow */
+  box-shadow: inset 0 0 12px rgba(0, 212, 255, 0.06);
+}

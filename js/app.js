@@ -2,7 +2,8 @@
  * Worldwide Radio Scanner – Main Application
  *
  * Orchestrates station fetching, scanning, and audio playback.
- * Depends on: js/radioBrowser.js (must be loaded first)
+ * Depends on: js/radioBrowser.js, js/visualiser.js, js/bitcoinResearchWriter.js
+ * (must be loaded first)
  */
 
 (() => {
@@ -24,6 +25,7 @@
   const stationTagsEl  = document.getElementById("stationTags");
   const stationCountEl = document.getElementById("stationCountry");
   const stationBitrateEl = document.getElementById("stationBitrate");
+  const visualiserCanvas = document.getElementById("visualiserCanvas");
   const scanBtn        = document.getElementById("btnScan");
   const prevBtn        = document.getElementById("btnPrev");
   const nextBtn        = document.getElementById("btnNext");
@@ -54,6 +56,11 @@
     dwellRange.value = scanDwell;
     dwellLabel.textContent = `${scanDwell}s`;
     volumeRange.value = audioEl.volume * 100;
+
+    // Boot visualiser (safe no-op if canvas not present)
+    if (visualiserCanvas && typeof Visualiser !== "undefined") {
+      Visualiser.init(audioEl, visualiserCanvas);
+    }
 
     await loadCountries();
     await loadTopStations();
@@ -417,6 +424,15 @@
       // Persist to user profile
       UserProfile.logCrush(result);
       showToast(`${channel.emoji} ${channel.label} — Block #${height.toLocaleString()}`);
+
+      // Write spin to GitHub research file if a GHP token is configured
+      if (typeof BitcoinResearchWriter !== "undefined") {
+        BitcoinResearchWriter.write(result).then((written) => {
+          if (written) {
+            showToast("₿ Spin logged to research file ✓");
+          }
+        });
+      }
 
     } catch (err) {
       slotEmoji.classList.remove("spinning");

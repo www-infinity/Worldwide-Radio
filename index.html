@@ -246,14 +246,21 @@
           </optgroup>
           <optgroup label="Music">
             <option value="pop">Pop</option>
+            <option value="top 40">Top 40</option>
             <option value="rock">Rock</option>
             <option value="jazz">Jazz</option>
             <option value="classical">Classical</option>
             <option value="hip-hop">Hip-Hop</option>
             <option value="country">Country</option>
             <option value="electronic">Electronic</option>
+            <option value="dance">Dance</option>
+            <option value="chill">Chill</option>
+            <option value="love songs">Love Songs</option>
             <option value="reggae">Reggae</option>
             <option value="folk">Folk</option>
+            <option value="ambient">Ambient</option>
+            <option value="military">Military</option>
+            <option value="shortwave">Shortwave</option>
           </optgroup>
           <optgroup label="Format">
             <option value="am">AM</option>
@@ -300,6 +307,13 @@
         <span id="stationCountry"></span>
         <span id="stationBitrate"></span>
       </div>
+      <!-- Audio Visualiser -->
+      <canvas
+        id="visualiserCanvas"
+        class="visualiser-canvas"
+        aria-hidden="true"
+        aria-label="Audio frequency visualiser"
+      ></canvas>
     </section>
 
     <!-- Hidden audio -->
@@ -413,6 +427,28 @@
         Your key is stored only in <code>localStorage</code> and never sent to any server other than your chosen AI endpoint.
         Works with OpenAI, OpenRouter, Groq, or any OpenAI-compatible API.
       </p>
+
+      <hr style="border-color:var(--glass-border);margin:1.25rem 0" />
+
+      <label class="profile-label">
+        GitHub Token (GHP)
+        <span class="settings-hint">(optional — logs each Bitcoin Crusher spin to the repo)</span>
+      </label>
+      <input
+        type="password"
+        id="ghpTokenInput"
+        placeholder="github_pat_… or ghp_…"
+        autocomplete="off"
+        style="width:100%;margin-bottom:0.5rem"
+      />
+      <button class="btn-primary" id="saveGhpToken" style="width:100%">Save GitHub Token</button>
+      <p class="settings-hint" style="margin-top:0.75rem">
+        If set, each Crusher spin writes a research entry to
+        <code>data/btc-research.json</code> in this repository via the GitHub API.
+        The token is stored only in your browser's <code>localStorage</code> and never
+        committed to source code.
+        Requires the token to have <strong>Contents: Write</strong> permission on this repo.
+      </p>
     </div>
   </dialog>
 
@@ -444,12 +480,14 @@
   <!-- Toast notification container -->
   <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="false"></div>
 
-  <!-- Scripts: profile → AI → dynamic nav → Bitcoin Crusher → radio browser → app → hero -->
+  <!-- Scripts: profile → AI → dynamic nav → Bitcoin Crusher → radio browser → visualiser → research writer → app → hero -->
   <script src="js/userProfile.js"></script>
   <script src="js/aiAssistant.js"></script>
   <script src="js/dynamicNav.js"></script>
   <script src="js/bitcoinCrusher.js"></script>
   <script src="js/radioBrowser.js"></script>
+  <script src="js/visualiser.js"></script>
+  <script src="js/bitcoinResearchWriter.js"></script>
   <script src="js/app.js"></script>
   <script src="js/hero.js"></script>
   <script>
@@ -490,6 +528,7 @@
       const saveNameBtn    = document.getElementById("profileSaveName");
       const clearHistBtn   = document.getElementById("profileClearHistory");
       const saveAiBtn      = document.getElementById("saveAiSettings");
+      const saveGhpBtn     = document.getElementById("saveGhpToken");
       const tabs           = document.querySelectorAll(".modal-tab");
       const panels         = document.querySelectorAll(".modal-panel");
 
@@ -502,6 +541,15 @@
           ? "Key saved — paste a new one to update"
           : "sk-… or any OpenAI-compatible key";
         document.getElementById("aiApiUrlInput").value = AIAssistant.getApiUrl();
+
+        // Pre-fill GHP token placeholder
+        const ghpInput = document.getElementById("ghpTokenInput");
+        if (ghpInput) {
+          ghpInput.value = "";
+          ghpInput.placeholder = BitcoinResearchWriter.getToken()
+            ? "Token saved — paste a new one to update"
+            : "github_pat_… or ghp_…";
+        }
 
         // Show history counts
         const p = UserProfile.get();
@@ -579,6 +627,26 @@
         saveAiBtn.after(savedMsg);
         setTimeout(() => savedMsg.remove(), 2000);
       });
+
+      // Save GHP token
+      if (saveGhpBtn) {
+        saveGhpBtn.addEventListener("click", () => {
+          const ghpInput = document.getElementById("ghpTokenInput");
+          if (ghpInput) {
+            const token = ghpInput.value.trim();
+            if (token) BitcoinResearchWriter.setToken(token);
+            ghpInput.value = "";
+            ghpInput.placeholder = token
+              ? "Token saved — paste a new one to update"
+              : ghpInput.placeholder;
+            const savedMsg = document.createElement("p");
+            savedMsg.textContent = token ? "✓ GitHub token saved" : "✓ Token cleared";
+            savedMsg.style.cssText = "color:var(--accent);font-size:0.85rem;margin-top:0.4rem";
+            saveGhpBtn.after(savedMsg);
+            setTimeout(() => savedMsg.remove(), 2000);
+          }
+        });
+      }
 
       // Boot: render avatar
       UserProfile.renderNavAvatar();
