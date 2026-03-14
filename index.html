@@ -544,7 +544,7 @@
 
         // Pre-fill GHP token placeholder
         const ghpInput = document.getElementById("ghpTokenInput");
-        if (ghpInput) {
+        if (ghpInput && typeof BitcoinResearchWriter !== "undefined") {
           ghpInput.value = "";
           ghpInput.placeholder = BitcoinResearchWriter.getToken()
             ? "Token saved — paste a new one to update"
@@ -632,7 +632,7 @@
       if (saveGhpBtn) {
         saveGhpBtn.addEventListener("click", () => {
           const ghpInput = document.getElementById("ghpTokenInput");
-          if (ghpInput) {
+          if (ghpInput && typeof BitcoinResearchWriter !== "undefined") {
             const token = ghpInput.value.trim();
             if (token) BitcoinResearchWriter.setToken(token);
             ghpInput.value = "";

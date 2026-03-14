@@ -431,6 +431,8 @@
           if (written) {
             showToast("₿ Spin logged to research file ✓");
           }
+        }).catch((err) => {
+          console.warn("[BitcoinResearchWriter] Write failed:", err);
         });
       }
 

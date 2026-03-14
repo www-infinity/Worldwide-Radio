@@ -38,13 +38,11 @@ const RadioBrowser = (() => {
    * @returns {Promise<Array>}
    */
   async function get(path, params = {}) {
-    const tried = new Set();
     let lastError;
 
     for (let attempt = 0; attempt < MIRRORS.length; attempt++) {
-      const base = baseUrl();
-      if (tried.has(base)) { mirrorIdx++; continue; }
-      tried.add(base);
+      // Round-robin through mirrors; use modulo to stay in bounds
+      const base = MIRRORS[(mirrorIdx + attempt) % MIRRORS.length];
 
       try {
         const url = new URL(base + path);
@@ -60,15 +58,16 @@ const RadioBrowser = (() => {
         if (!response.ok) {
           throw new Error(`Radio Browser API error ${response.status}: ${response.statusText}`);
         }
+        // Successful mirror — remember it for next calls
+        mirrorIdx = (mirrorIdx + attempt) % MIRRORS.length;
         return await response.json();
       } catch (err) {
         lastError = err;
-        // Advance to next mirror and retry
-        mirrorIdx++;
+        // Try next mirror
       }
     }
 
-    throw lastError || new Error("All Radio Browser mirrors unavailable. Check your connection.");
+    throw lastError || new Error("All Radio Browser mirrors failed to respond. Please try again later.");
   }
 
   /**

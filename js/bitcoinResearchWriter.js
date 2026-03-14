@@ -99,16 +99,16 @@ const BitcoinResearchWriter = (() => {
       entries.unshift(entry);
       const trimmed = entries.slice(0, 200);
 
-      const newContent = btoa(unescape(encodeURIComponent(
-        JSON.stringify(trimmed, null, 2)
-      )));
+      const newContent = btoa(
+        String.fromCharCode(...new TextEncoder().encode(JSON.stringify(trimmed, null, 2)))
+      );
 
       const body = {
         message: `₿ Spin #${height}: ${channel.emoji} ${channel.label} [${channel.id}]`,
         content: newContent,
         committer: {
           name:  "Worldwide Radio Scanner",
-          email: "scanner@www-infinity.github.io",
+          email: "scanner@users.noreply.github.com",
         },
       };
       if (current) body.sha = current.sha;

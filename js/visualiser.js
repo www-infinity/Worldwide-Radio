@@ -24,6 +24,7 @@ const Visualiser = (() => {
   // Visual config
   const BAR_COUNT  = 64;
   const BAR_GAP    = 2;
+  const FFT_SIZE   = 256; // produces 128 usable frequency bins (bufferLen = fftSize / 2)
   const CYAN       = "#00d4ff";
   const GOLD       = "#ffd166";
   const PURPLE     = "#7b5cfa";
@@ -36,7 +37,7 @@ const Visualiser = (() => {
       if (!AC) return false;
       audioCtx = new AC();
       analyser = audioCtx.createAnalyser();
-      analyser.fftSize        = BAR_COUNT * 2 * 2; // 256 bins → 128 usable
+      analyser.fftSize        = FFT_SIZE;
       analyser.smoothingTimeConstant = 0.8;
       source = audioCtx.createMediaElementSource(audioEl);
       source.connect(analyser);
