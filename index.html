@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Worldwide Radio Scanner – stream live radio from any country, genre, or search term using the Radio Browser public API." />
+  <title>Worldwide Radio Scanner</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app-wrapper">
+
+    <!-- ── Header ───────────────────────────────────────────── -->
+    <header>
+      <span class="logo" aria-hidden="true">📡</span>
+      <div class="header-text">
+        <h1>Worldwide Radio Scanner</h1>
+        <p>40,000+ stations · police · AM/FM · talk · news · music</p>
+      </div>
+      <!-- Animated signal-strength bars -->
+      <div class="signal-bar" id="signalBar" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </header>
+
+    <main>
+
+      <!-- ── Search / Filter controls ─────────────────────────── -->
+      <section class="controls-panel" aria-label="Search and filter">
+
+        <!-- Free-text search -->
+        <div class="control-group">
+          <label for="searchQuery">Search by name</label>
+          <div class="search-row">
+            <input
+              type="text"
+              id="searchQuery"
+              placeholder="e.g. BBC, WNYC, Police Scanner…"
+              aria-label="Search station by name"
+            />
+            <button class="btn-primary" id="btnSearch" aria-label="Search">Search</button>
+          </div>
+        </div>
+
+        <!-- Country filter -->
+        <div class="control-group">
+          <label for="countrySelect">Browse by country</label>
+          <select id="countrySelect" aria-label="Select country">
+            <option value="">— All countries —</option>
+          </select>
+        </div>
+
+        <!-- Genre / tag filter -->
+        <div class="control-group">
+          <label for="tagSelect">Browse by genre / type</label>
+          <select id="tagSelect" aria-label="Select genre or type">
+            <option value="">— All genres —</option>
+            <optgroup label="News &amp; Talk">
+              <option value="news">News</option>
+              <option value="talk">Talk</option>
+              <option value="politics">Politics</option>
+              <option value="police scanner">Police Scanner</option>
+              <option value="emergency">Emergency</option>
+            </optgroup>
+            <optgroup label="Music">
+              <option value="pop">Pop</option>
+              <option value="rock">Rock</option>
+              <option value="jazz">Jazz</option>
+              <option value="classical">Classical</option>
+              <option value="hip-hop">Hip-Hop</option>
+              <option value="country">Country</option>
+              <option value="electronic">Electronic</option>
+              <option value="reggae">Reggae</option>
+              <option value="folk">Folk</option>
+            </optgroup>
+            <optgroup label="Format">
+              <option value="am">AM</option>
+              <option value="fm">FM</option>
+              <option value="public radio">Public Radio</option>
+              <option value="sports">Sports</option>
+              <option value="religious">Religious</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <!-- Volume control -->
+        <div class="control-group">
+          <label for="volume">Volume</label>
+          <div class="volume-group">
+            <span aria-hidden="true">🔈</span>
+            <input
+              type="range"
+              id="volume"
+              min="0"
+              max="100"
+              value="80"
+              aria-label="Volume"
+            />
+            <span aria-hidden="true">🔊</span>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ── Transport / Scanner controls ─────────────────────── -->
+      <div class="transport" role="toolbar" aria-label="Playback controls">
+        <button class="btn-primary"   id="btnScan" aria-label="Start scanning">⚡ Scan</button>
+        <button class="btn-secondary" id="btnPrev" aria-label="Previous station">⏮ Prev</button>
+        <button class="btn-secondary" id="btnNext" aria-label="Next station">Next ⏭</button>
+        <button class="btn-danger"    id="btnStop" aria-label="Stop playback">⏹ Stop</button>
+
+        <div class="dwell-group">
+          <label for="dwellTime">Dwell:</label>
+          <input
+            type="range"
+            id="dwellTime"
+            min="3"
+            max="30"
+            value="6"
+            aria-label="Seconds per station while scanning"
+          />
+          <span id="dwellLabel" aria-live="polite">6s</span>
+        </div>
+      </div>
+
+      <!-- ── Error message ──────────────────────────────────────── -->
+      <div
+        class="error-msg"
+        id="errorMsg"
+        role="alert"
+        aria-live="assertive"
+        hidden
+      ></div>
+
+      <!-- ── Now Playing card ───────────────────────────────────── -->
+      <section class="now-playing" id="nowPlaying" aria-label="Now playing" hidden>
+        <h2 id="stationName"></h2>
+        <div class="now-playing-meta">
+          <span id="stationTags" aria-label="Tags"></span>
+          <span id="stationCountry" aria-label="Location"></span>
+          <span id="stationBitrate" aria-label="Bitrate"></span>
+        </div>
+      </section>
+
+      <!-- Hidden audio element -->
+      <audio id="audioPlayer" preload="none" aria-hidden="true"></audio>
+
+      <!-- ── Station list ────────────────────────────────────────── -->
+      <div class="list-header">
+        <h3>Stations</h3>
+        <span class="result-count" id="resultCount" aria-live="polite"></span>
+      </div>
+
+      <div class="loading" id="loading" aria-label="Loading stations">
+        <div class="spinner" aria-hidden="true"></div>
+        Loading stations…
+      </div>
+
+      <div class="station-list-wrap">
+        <ul class="station-list" id="stationList" aria-label="Station list"></ul>
+      </div>
+
+    </main>
+
+    <!-- ── Footer ────────────────────────────────────────────── -->
+    <footer>
+      Station data provided by the
+      <a href="https://www.radio-browser.info/" target="_blank" rel="noopener noreferrer">Radio Browser</a>
+      community (CC0). No API key required.
+    </footer>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/radioBrowser.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
