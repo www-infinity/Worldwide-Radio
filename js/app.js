@@ -230,9 +230,18 @@
     clearError();
     audioEl.src = station.url_resolved || station.url;
     audioEl.load();
-    audioEl.play().catch(() => {
-      // Autoplay blocked or stream error
-      if (isScanning) playNext();
+    audioEl.play().catch((err) => {
+      // Ignore AbortError: it means we intentionally changed stations (load()
+      // rejects any pending play() with AbortError when the src is swapped).
+      // Without this guard the scanner cascades: each abort triggers playNext()
+      // which aborts the next station, looping infinitely and playing nothing.
+      if (err.name === "AbortError") return;
+      if (isScanning) {
+        playNext();
+      } else {
+        showError("Stream error. The station may be offline. Try another.");
+        animateSignal(false);
+      }
     });
 
     RadioBrowser.registerClick(station.stationuuid);
