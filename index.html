@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Worldwide Radio Scanner – stream live radio from any country, genre, or search term. Powered by Radio Browser API, Infinity Graphics &amp; Flux Capacitor." />
+  <title>Worldwide Radio Scanner · ∞ www-infinity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- ════════════════════════════════════════════════════════
+       ANIMATED CANVAS HERO (Flux Capacitor energy rings)
+  ═══════════════════════════════════════════════════════════ -->
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+
+  <!-- ════════════════════════════════════════════════════════
+       NAV BAR — hamburger + all www-infinity repo links
+  ═══════════════════════════════════════════════════════════ -->
+  <nav class="site-nav" role="navigation" aria-label="Site navigation">
+    <div class="nav-inner">
+
+      <!-- Logo / home link -->
+      <a class="nav-brand" href="https://github.com/www-infinity" aria-label="www-infinity home">
+        <span class="nav-logo" aria-hidden="true">∞</span>
+        <span class="nav-brand-text">www-infinity</span>
+      </a>
+
+      <!-- Profile avatar button -->
+      <button
+        class="profile-btn"
+        id="profileBtn"
+        aria-label="Open user profile"
+        aria-haspopup="dialog"
+        title="Set your profile"
+      >∞</button>
+
+      <!-- Hamburger toggle -->
+      <button
+        class="hamburger"
+        id="hamburger"
+        aria-label="Open navigation menu"
+        aria-expanded="false"
+        aria-controls="navMenu"
+      >
+        <span></span><span></span><span></span>
+      </button>
+
+      <!-- Full repo menu (static fallback; replaced dynamically by DynamicNav) -->
+      <ul class="nav-menu" id="navMenu" role="list">
+
+        <li class="nav-group-label">⚡ Signal &amp; Energy</li>
+        <li><a href="https://github.com/www-infinity/Flux-Capacitor"          target="_blank" rel="noopener">Flux Capacitor</a></li>
+        <li><a href="https://github.com/www-infinity/Worldwide-Radio"         target="_blank" rel="noopener" aria-current="page">Worldwide Radio</a></li>
+        <li><a href="https://github.com/www-infinity/Hydrogen-Radio"          target="_blank" rel="noopener">Hydrogen Radio</a></li>
+        <li><a href="https://github.com/www-infinity/Hosting-service"         target="_blank" rel="noopener">Hosting Service</a></li>
+
+        <li class="nav-group-label">🎨 Graphics &amp; Design</li>
+        <li><a href="https://github.com/www-infinity/Infinity-Graphics"       target="_blank" rel="noopener">Infinity Graphics</a></li>
+        <li><a href="https://github.com/www-infinity/3d-world"                target="_blank" rel="noopener">3D World</a></li>
+        <li><a href="https://github.com/www-infinity/Beyond-Tokens"           target="_blank" rel="noopener">Beyond Tokens</a></li>
+
+        <li class="nav-group-label">🎮 Entertainment</li>
+        <li><a href="https://github.com/www-infinity/Theater"                 target="_blank" rel="noopener">Theater</a></li>
+        <li><a href="https://github.com/www-infinity/Bob-Segar-s-Musiverse"   target="_blank" rel="noopener">Bob Seger's Musiverse</a></li>
+        <li><a href="https://github.com/www-infinity/Zelda-NES"               target="_blank" rel="noopener">Zelda NES</a></li>
+        <li><a href="https://github.com/www-infinity/NES-Mario-World-Extravaganza-The-Wizard-Platform" target="_blank" rel="noopener">Mario World</a></li>
+        <li><a href="https://github.com/www-infinity/Wizard-NES-Movie-Website-Cartoon-Movie-Theater"   target="_blank" rel="noopener">Wizard Movie Theater</a></li>
+        <li><a href="https://github.com/www-infinity/Aces"                    target="_blank" rel="noopener">Aces</a></li>
+
+        <li class="nav-group-label">🔬 Science &amp; Tech</li>
+        <li><a href="https://github.com/www-infinity/Ion"                     target="_blank" rel="noopener">Ion</a></li>
+        <li><a href="https://github.com/www-infinity/Time-Machine"            target="_blank" rel="noopener">Time Machine</a></li>
+        <li><a href="https://github.com/www-infinity/Future-Now"              target="_blank" rel="noopener">Future Now</a></li>
+        <li><a href="https://github.com/www-infinity/Hydrogen-Digital-TV"     target="_blank" rel="noopener">Hydrogen Digital TV</a></li>
+        <li><a href="https://github.com/www-infinity/R2D2"                    target="_blank" rel="noopener">R2D2</a></li>
+        <li><a href="https://github.com/www-infinity/Hydrhost"                target="_blank" rel="noopener">HydrHost</a></li>
+
+        <li class="nav-group-label">💰 Finance &amp; Tokens</li>
+        <li><a href="https://github.com/www-infinity/Mint-For-Infinity"       target="_blank" rel="noopener">Mint for Infinity</a></li>
+        <li><a href="https://github.com/www-infinity/Bitcoin-Crusher"         target="_blank" rel="noopener">Bitcoin Crusher</a></li>
+        <li><a href="https://github.com/www-infinity/4-hash-token-system"     target="_blank" rel="noopener">4-Hash Token System</a></li>
+        <li><a href="https://github.com/www-infinity/Open-Flaw"               target="_blank" rel="noopener">Open Flaw</a></li>
+
+        <li class="nav-group-label">🛠 Infrastructure</li>
+        <li><a href="https://github.com/www-infinity/Unifier"                 target="_blank" rel="noopener">Unifier</a></li>
+        <li><a href="https://github.com/www-infinity/Zero-Inertia"            target="_blank" rel="noopener">Zero Inertia</a></li>
+        <li><a href="https://github.com/www-infinity/No-Inertia"              target="_blank" rel="noopener">No Inertia</a></li>
+        <li><a href="https://github.com/www-infinity/Spawn"                   target="_blank" rel="noopener">Spawn</a></li>
+        <li><a href="https://github.com/www-infinity/Npx-Claude-flow-"        target="_blank" rel="noopener">NPX Claude Flow</a></li>
+
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Overlay for closing hamburger menu on outside click -->
+  <div class="nav-overlay" id="navOverlay" aria-hidden="true"></div>
+
+  <!-- ════════════════════════════════════════════════════════
+       PAGE HERO — title + tagline over the canvas
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="hero-section" aria-labelledby="heroTitle">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot" aria-hidden="true"></span>
+        LIVE · 40,000+ STATIONS WORLDWIDE
+      </div>
+      <h1 id="heroTitle" class="hero-title">
+        Worldwide<br />
+        <span class="hero-title-accent">Radio Scanner</span>
+      </h1>
+      <p class="hero-sub">
+        Police · AM · FM · Talk · News · Music · Emergency<br />
+        Search any station on the planet, or scan the dial automatically.
+      </p>
+
+      <!-- Signal strength decoration -->
+      <div class="signal-bar" id="signalBar" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+
+      <!-- Powered-by badges -->
+      <div class="powered-by" aria-label="Powered by">
+        <a href="https://github.com/www-infinity/Flux-Capacitor"    target="_blank" rel="noopener" class="powered-badge flux">
+          ⚡ Flux Capacitor
+        </a>
+        <a href="https://github.com/www-infinity/Infinity-Graphics"  target="_blank" rel="noopener" class="powered-badge graphics">
+          🎨 Infinity Graphics
+        </a>
+        <a href="https://www.radio-browser.info/"                    target="_blank" rel="noopener" class="powered-badge api">
+          📡 Radio Browser API
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════
+       BITCOIN CRUSHER — Entropy-driven channel selector
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="app-shell" style="padding-bottom:0">
+    <div class="crusher-card glass-card" id="crusherCard" aria-labelledby="crusherTitle">
+
+      <div class="crusher-header">
+        <div>
+          <h2 class="crusher-title" id="crusherTitle">
+            <span class="crusher-icon" aria-hidden="true">₿</span>
+            Bitcoin Crusher
+          </h2>
+          <p class="crusher-sub">
+            Latest block hash → entropy engine → radio channel
+          </p>
+        </div>
+        <a
+          href="https://github.com/www-infinity/Bitcoin-Crusher"
+          target="_blank"
+          rel="noopener"
+          class="powered-badge flux"
+          aria-label="Bitcoin-Crusher repo"
+        >
+          ⛓ Repo
+        </a>
+      </div>
+
+      <!-- Slot-machine result display -->
+      <div class="crusher-slot" id="crusherSlot" aria-live="polite" aria-atomic="true">
+        <div class="slot-channel" id="slotChannel">
+          <span class="slot-emoji" id="slotEmoji">🎰</span>
+          <span class="slot-label" id="slotLabel">Spin to select a channel</span>
+        </div>
+      </div>
+
+      <!-- Block metadata row -->
+      <div class="crusher-meta" id="crusherMeta" hidden>
+        <div class="crusher-meta-item">
+          <span class="crusher-meta-label">Block</span>
+          <span class="crusher-meta-value" id="crusherHeight">—</span>
+        </div>
+        <div class="crusher-meta-item crusher-hash-wrap">
+          <span class="crusher-meta-label">Hash</span>
+          <code class="crusher-hash" id="crusherHash" title="">—</code>
+        </div>
+        <div class="crusher-meta-item">
+          <span class="crusher-meta-label">Index</span>
+          <span class="crusher-meta-value" id="crusherIndex">—</span>
+        </div>
+      </div>
+
+      <!-- Action row -->
+      <div class="crusher-actions">
+        <button class="btn-primary crusher-spin-btn" id="btnCrush" aria-label="Spin Bitcoin Crusher">
+          <span class="crush-btn-icon" aria-hidden="true">🎰</span>
+          Spin the Dial
+        </button>
+        <span class="crusher-hint" id="crusherHint">
+          Fetches the live Bitcoin block hash and uses it as entropy to pick your station genre.
+        </span>
+      </div>
+
+      <!-- Inline error for crusher only -->
+      <div class="error-msg" id="crusherError" role="alert" hidden></div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════
+       MAIN APP SHELL
+  ═══════════════════════════════════════════════════════════ -->
+  <div class="app-shell">
+
+    <!-- ── Search / Filter ──────────────────────────────────── -->
+    <section class="glass-card controls-panel" aria-label="Search and filter">
+
+      <div class="control-group">
+        <label for="searchQuery">Search by name</label>
+        <div class="search-row">
+          <input
+            type="text"
+            id="searchQuery"
+            placeholder="BBC, WNYC, Police Scanner, Jazz FM…"
+            aria-label="Search station by name"
+          />
+          <button class="btn-primary" id="btnSearch">Search</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label for="countrySelect">Country</label>
+        <select id="countrySelect" aria-label="Browse by country">
+          <option value="">— All countries —</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="tagSelect">Genre / Type</label>
+        <select id="tagSelect" aria-label="Browse by genre or type">
+          <option value="">— All genres —</option>
+          <optgroup label="News &amp; Talk">
+            <option value="news">News</option>
+            <option value="talk">Talk</option>
+            <option value="politics">Politics</option>
+            <option value="police scanner">Police Scanner</option>
+            <option value="emergency">Emergency</option>
+          </optgroup>
+          <optgroup label="Music">
+            <option value="pop">Pop</option>
+            <option value="rock">Rock</option>
+            <option value="jazz">Jazz</option>
+            <option value="classical">Classical</option>
+            <option value="hip-hop">Hip-Hop</option>
+            <option value="country">Country</option>
+            <option value="electronic">Electronic</option>
+            <option value="reggae">Reggae</option>
+            <option value="folk">Folk</option>
+          </optgroup>
+          <optgroup label="Format">
+            <option value="am">AM</option>
+            <option value="fm">FM</option>
+            <option value="public radio">Public Radio</option>
+            <option value="sports">Sports</option>
+            <option value="religious">Religious</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="volume">Volume</label>
+        <div class="volume-group">
+          <span aria-hidden="true">🔈</span>
+          <input type="range" id="volume" min="0" max="100" value="80" aria-label="Volume" />
+          <span aria-hidden="true">🔊</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ── Transport controls ────────────────────────────────── -->
+    <div class="transport glass-card" role="toolbar" aria-label="Playback controls">
+      <button class="btn-primary"   id="btnScan">⚡ Scan</button>
+      <button class="btn-secondary" id="btnPrev">⏮ Prev</button>
+      <button class="btn-secondary" id="btnNext">Next ⏭</button>
+      <button class="btn-danger"    id="btnStop">⏹ Stop</button>
+      <div class="dwell-group">
+        <label for="dwellTime">Dwell</label>
+        <input type="range" id="dwellTime" min="3" max="30" value="6" aria-label="Seconds per station" />
+        <span id="dwellLabel" aria-live="polite">6s</span>
+      </div>
+    </div>
+
+    <!-- ── Error banner ──────────────────────────────────────── -->
+    <div class="error-msg" id="errorMsg" role="alert" aria-live="assertive" hidden></div>
+
+    <!-- ── Now Playing card ─────────────────────────────────── -->
+    <section class="now-playing glass-card" id="nowPlaying" aria-label="Now playing" hidden>
+      <h2 id="stationName"></h2>
+      <div class="now-playing-meta">
+        <span id="stationTags"></span>
+        <span id="stationCountry"></span>
+        <span id="stationBitrate"></span>
+      </div>
+    </section>
+
+    <!-- Hidden audio -->
+    <audio id="audioPlayer" preload="none" aria-hidden="true"></audio>
+
+    <!-- ── Station list ─────────────────────────────────────── -->
+    <div class="list-header">
+      <h3>Stations</h3>
+      <span class="result-count" id="resultCount" aria-live="polite"></span>
+    </div>
+
+    <div class="loading" id="loading" aria-label="Loading stations">
+      <div class="spinner" aria-hidden="true"></div>
+      Loading stations…
+    </div>
+
+    <div class="station-list-wrap glass-card">
+      <ul class="station-list" id="stationList" aria-label="Station list"></ul>
+    </div>
+
+  </div><!-- /.app-shell -->
+
+  <!-- ════════════════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="footer-logo" aria-hidden="true">∞</span>
+        <span>www-infinity</span>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/www-infinity/Flux-Capacitor"   target="_blank" rel="noopener">Flux Capacitor</a>
+        <a href="https://github.com/www-infinity/Infinity-Graphics" target="_blank" rel="noopener">Infinity Graphics</a>
+        <a href="https://www.radio-browser.info/"                   target="_blank" rel="noopener">Radio Browser</a>
+        <a href="https://github.com/www-infinity"                   target="_blank" rel="noopener">All Repos</a>
+      </div>
+      <p class="footer-copy">
+        Station data: <a href="https://www.radio-browser.info/" target="_blank" rel="noopener">Radio Browser</a> (CC0) · No API key required
+      </p>
+    </div>
+  </footer>
+
+  <!-- ════════════════════════════════════════════════════════
+       PROFILE MODAL
+  ═══════════════════════════════════════════════════════════ -->
+  <div class="modal-backdrop" id="profileModalBackdrop" hidden aria-hidden="true"></div>
+  <dialog class="profile-modal glass-card" id="profileModal" aria-label="User profile" aria-modal="true">
+    <div class="modal-header">
+      <h2>Your Profile</h2>
+      <button class="modal-close" id="profileModalClose" aria-label="Close profile">✕</button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="modal-tabs" role="tablist">
+      <button class="modal-tab active" role="tab" data-tab="profile" aria-selected="true">Profile</button>
+      <button class="modal-tab" role="tab" data-tab="history" aria-selected="false">History</button>
+      <button class="modal-tab" role="tab" data-tab="settings" aria-selected="false">Settings ⚙</button>
+    </div>
+
+    <!-- Tab: Profile -->
+    <div class="modal-panel" id="tabProfile">
+      <div class="profile-avatar-row">
+        <div class="profile-avatar-large" id="profileAvatarPreview">∞</div>
+        <div class="profile-colour-section">
+          <label class="profile-label">Avatar colour</label>
+          <div class="colour-swatch-wrap" id="profileColourSwatches"></div>
+        </div>
+      </div>
+      <label class="profile-label" for="profileNameInput">Display name</label>
+      <div class="search-row" style="margin-top:0.3rem">
+        <input type="text" id="profileNameInput" placeholder="Enter your name…" maxlength="32" />
+        <button class="btn-primary" id="profileSaveName">Save</button>
+      </div>
+    </div>
+
+    <!-- Tab: History -->
+    <div class="modal-panel" id="tabHistory" hidden>
+      <div class="history-section">
+        <h3 class="history-title">📻 Recent Stations <span class="hist-count" id="histStationCount"></span></h3>
+        <ul class="history-list" id="profileScanHistory"></ul>
+      </div>
+      <div class="history-section">
+        <h3 class="history-title">₿ Crusher Spins <span class="hist-count" id="histCrushCount"></span></h3>
+        <ul class="history-list" id="profileCrushHistory"></ul>
+      </div>
+      <button class="btn-secondary" id="profileClearHistory" style="margin-top:1rem;width:100%">
+        🗑 Clear all history
+      </button>
+    </div>
+
+    <!-- Tab: Settings -->
+    <div class="modal-panel" id="tabSettings" hidden>
+      <label class="profile-label">AI API Key <span class="settings-hint">(optional — stored in your browser only)</span></label>
+      <input
+        type="password"
+        id="aiApiKeyInput"
+        placeholder="sk-… or any OpenAI-compatible key"
+        autocomplete="off"
+        style="width:100%;margin-bottom:0.5rem"
+      />
+      <label class="profile-label">AI Endpoint URL</label>
+      <input
+        type="url"
+        id="aiApiUrlInput"
+        placeholder="https://api.openai.com/v1/chat/completions"
+        style="width:100%;margin-bottom:0.75rem"
+      />
+      <button class="btn-primary" id="saveAiSettings" style="width:100%">Save AI Settings</button>
+      <p class="settings-hint" style="margin-top:0.75rem">
+        Your key is stored only in <code>localStorage</code> and never sent to any server other than your chosen AI endpoint.
+        Works with OpenAI, OpenRouter, Groq, or any OpenAI-compatible API.
+      </p>
+    </div>
+  </dialog>
+
+  <!-- ════════════════════════════════════════════════════════
+       AI CHAT PANEL (floating)
+  ═══════════════════════════════════════════════════════════ -->
+  <button class="ai-chat-toggle" id="aiChatToggle" aria-label="Open AI assistant" title="AI Radio Assistant">
+    💬
+  </button>
+
+  <div class="ai-chat-panel glass-card" id="aiChatPanel" hidden role="dialog" aria-label="AI assistant">
+    <div class="ai-chat-header">
+      <span>∞ AI Radio Assistant</span>
+      <button class="modal-close" id="aiChatClose" aria-label="Close AI chat">✕</button>
+    </div>
+    <div class="ai-chat-messages" id="aiChatMessages" aria-live="polite" aria-relevant="additions"></div>
+    <div class="ai-chat-input-row">
+      <input
+        type="text"
+        id="aiChatInput"
+        placeholder="Ask anything about the scanner…"
+        aria-label="Chat message"
+        autocomplete="off"
+      />
+      <button class="btn-primary" id="aiChatSend" aria-label="Send message">➤</button>
+    </div>
+  </div>
+
+  <!-- Toast notification container -->
+  <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="false"></div>
+
+  <!-- Scripts: profile → AI → dynamic nav → Bitcoin Crusher → radio browser → app → hero -->
+  <script src="js/userProfile.js"></script>
+  <script src="js/aiAssistant.js"></script>
+  <script src="js/dynamicNav.js"></script>
+  <script src="js/bitcoinCrusher.js"></script>
+  <script src="js/radioBrowser.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/hero.js"></script>
+  <script>
+    // ── Hamburger menu ──────────────────────────────────────────────────────
+    (function () {
+      const btn     = document.getElementById("hamburger");
+      const menu    = document.getElementById("navMenu");
+      const overlay = document.getElementById("navOverlay");
+
+      function openMenu() {
+        menu.classList.add("open");
+        overlay.classList.add("visible");
+        btn.setAttribute("aria-expanded", "true");
+        btn.classList.add("open");
+      }
+      function closeMenu() {
+        menu.classList.remove("open");
+        overlay.classList.remove("visible");
+        btn.setAttribute("aria-expanded", "false");
+        btn.classList.remove("open");
+      }
+
+      btn.addEventListener("click", () =>
+        menu.classList.contains("open") ? closeMenu() : openMenu()
+      );
+      overlay.addEventListener("click", closeMenu);
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") { closeMenu(); closeProfile(); }
+      });
+    })();
+
+    // ── Profile modal ───────────────────────────────────────────────────────
+    (function () {
+      const profileBtn     = document.getElementById("profileBtn");
+      const modal          = document.getElementById("profileModal");
+      const backdrop       = document.getElementById("profileModalBackdrop");
+      const closeBtn       = document.getElementById("profileModalClose");
+      const saveNameBtn    = document.getElementById("profileSaveName");
+      const clearHistBtn   = document.getElementById("profileClearHistory");
+      const saveAiBtn      = document.getElementById("saveAiSettings");
+      const tabs           = document.querySelectorAll(".modal-tab");
+      const panels         = document.querySelectorAll(".modal-panel");
+
+      function openProfile() {
+        UserProfile.renderModal();
+
+        // Pre-fill AI settings — leave key input blank if set (type=password hides it anyway)
+        document.getElementById("aiApiKeyInput").value = "";
+        document.getElementById("aiApiKeyInput").placeholder = AIAssistant.getApiKey()
+          ? "Key saved — paste a new one to update"
+          : "sk-… or any OpenAI-compatible key";
+        document.getElementById("aiApiUrlInput").value = AIAssistant.getApiUrl();
+
+        // Show history counts
+        const p = UserProfile.get();
+        const sc = document.getElementById("histStationCount");
+        const cc = document.getElementById("histCrushCount");
+        if (sc) sc.textContent = `(${p.scanHistory.length})`;
+        if (cc) cc.textContent = `(${p.crushHistory.length})`;
+
+        // Update large avatar preview
+        const preview = document.getElementById("profileAvatarPreview");
+        if (preview) {
+          preview.textContent   = p.name ? p.name[0].toUpperCase() : "∞";
+          preview.style.background = p.avatarColour;
+        }
+
+        backdrop.hidden = false;
+        backdrop.removeAttribute("aria-hidden");
+        modal.showModal ? modal.showModal() : (modal.hidden = false);
+        document.getElementById("profileNameInput").focus();
+      }
+
+      window.closeProfile = function () {
+        backdrop.hidden = true;
+        backdrop.setAttribute("aria-hidden", "true");
+        modal.close ? modal.close() : (modal.hidden = true);
+      };
+
+      profileBtn.addEventListener("click", openProfile);
+      backdrop.addEventListener("click", closeProfile);
+      closeBtn.addEventListener("click", closeProfile);
+
+      // Tab switching
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          tabs.forEach((t) => { t.classList.remove("active"); t.setAttribute("aria-selected", "false"); });
+          panels.forEach((p) => (p.hidden = true));
+          tab.classList.add("active");
+          tab.setAttribute("aria-selected", "true");
+          const target = document.getElementById("tab" + tab.dataset.tab.charAt(0).toUpperCase() + tab.dataset.tab.slice(1));
+          if (target) { target.hidden = false; }
+          // Re-render history panel on switch
+          if (tab.dataset.tab === "history") UserProfile.renderModal();
+        });
+      });
+
+      // Save name
+      saveNameBtn.addEventListener("click", () => {
+        const val = document.getElementById("profileNameInput").value;
+        UserProfile.setName(val);
+        const preview = document.getElementById("profileAvatarPreview");
+        if (preview) {
+          const p = UserProfile.get();
+          preview.textContent = p.name ? p.name[0].toUpperCase() : "∞";
+        }
+      });
+
+      // Clear history
+      clearHistBtn.addEventListener("click", () => {
+        if (confirm("Clear all scan, crusher, and chat history?")) {
+          UserProfile.clearHistory();
+          UserProfile.renderModal();
+        }
+      });
+
+      // Save AI settings
+      saveAiBtn.addEventListener("click", () => {
+        const keyInput = document.getElementById("aiApiKeyInput").value.trim();
+        const urlInput = document.getElementById("aiApiUrlInput").value.trim();
+        // Only overwrite key if the user actually typed a new value
+        if (keyInput) AIAssistant.setApiKey(keyInput);
+        if (urlInput) AIAssistant.setApiUrl(urlInput);
+        const savedMsg = document.createElement("p");
+        savedMsg.textContent = "✓ Saved";
+        savedMsg.style.cssText = "color:var(--accent);font-size:0.85rem;margin-top:0.4rem";
+        saveAiBtn.after(savedMsg);
+        setTimeout(() => savedMsg.remove(), 2000);
+      });
+
+      // Boot: render avatar
+      UserProfile.renderNavAvatar();
+    })();
+
+    // ── AI chat ─────────────────────────────────────────────────────────────
+    AIAssistant.initUI();
+
+    // ── Dynamic nav ──────────────────────────────────────────────────────────
+    DynamicNav.init();
+  </script>
+</body>
+</html>
