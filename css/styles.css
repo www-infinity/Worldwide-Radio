@@ -1012,7 +1012,7 @@ button.active {
 }
 
 /* Reset dialog default styles */
-.profile-modal[open], .profile-modal:not([hidden]) { display: block; }
+.profile-modal[open] { display: block; }
 
 .modal-header {
   display: flex;
