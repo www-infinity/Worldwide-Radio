@@ -35,13 +35,17 @@ const Visualiser = (() => {
     try {
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return false;
-      audioCtx = new AC();
-      analyser = audioCtx.createAnalyser();
-      analyser.fftSize        = FFT_SIZE;
-      analyser.smoothingTimeConstant = 0.8;
-      source = audioCtx.createMediaElementSource(audioEl);
-      source.connect(analyser);
-      analyser.connect(audioCtx.destination);
+      const newCtx      = new AC();
+      const newAnalyser = newCtx.createAnalyser();
+      newAnalyser.fftSize               = FFT_SIZE;
+      newAnalyser.smoothingTimeConstant = 0.8;
+      const newSource = newCtx.createMediaElementSource(audioEl);
+      newSource.connect(newAnalyser);
+      newAnalyser.connect(newCtx.destination);
+      // All steps succeeded — commit to module-level state
+      audioCtx  = newCtx;
+      analyser  = newAnalyser;
+      source    = newSource;
       bufferLen = analyser.frequencyBinCount;
       dataArray = new Uint8Array(bufferLen);
       return true;
@@ -69,9 +73,9 @@ const Visualiser = (() => {
     resize();
 
     // Auto-wire to audio element events
-    audioEl.addEventListener("playing", () => {
+    audioEl.addEventListener("playing", async () => {
       if (ensureContext(audioEl)) {
-        if (audioCtx.state === "suspended") audioCtx.resume();
+        if (audioCtx.state === "suspended") await audioCtx.resume().catch(() => {});
         start();
       }
     });
